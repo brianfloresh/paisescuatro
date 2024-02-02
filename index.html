@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario de Direcciones</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      padding: 20px;
+    }
+
+    .btn-custom {
+      background-color: #e44d26;
+      color: #fff;
+      border: none;
+    }
+
+    .btn-custom:hover {
+      background-color: #c5391f;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2 class="text-center mt-4 mb-4">Formulario de Direcciones</h2>
+  <form id="direccionForm">
+    <div class="form-group">
+      <label for="pais">País:</label>
+      <select class="form-control" id="pais" onchange="cargarEstados()">
+        <option value="mexico">México</option>
+        <option value="japon">Japón</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="estado">Estado:</label>
+      <select class="form-control" id="estado" onchange="cargarMunicipios()">
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="municipio">Municipio/Ciudad:</label>
+      <select class="form-control" id="municipio">
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="localidad">Localidad:</label>
+      <select class="form-control" id="localidad">
+      </select>
+    </div>
+
+    <button type="button" class="btn btn-custom btn-block" onclick="mostrarDatos()">Enviar</button>
+  </form>
+
+  <div id="resultado" class="mt-4"></div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+  const paises = {
+    mexico: {
+      estados: ["Hidalgo", "Querétaro", "Puebla", "Nuevo León", "Veracruz"],
+      municipios: {
+        hidalgo: ["Tula", "Tepeji", "Mixquiahuala", "Pachuca", "Tizayuca"],
+        queretaro: ["Querétaro", "San Juan del Río", "Corregidora", "El Marqués", "Tequisquiapan"],
+        puebla: ["Puebla", "Tlaxcala", "Atlixco", "Cholula", "Teziutlán"],
+        nuevo_leon: ["Monterrey", "San Pedro", "Guadalupe", "Escobedo", "Santa Catarina"],
+        veracruz: ["Veracruz", "Xalapa", "Coatzacoalcos", "Córdoba", "Poza Rica"]
+      },
+      localidades: {
+        tula: ["Tula San Marcos", "Tula El Llano", "Tula San Miguel de las Piedras"],
+        tepeji: ["Tepeji Localidad1", "Tepeji Localidad2", "Tepeji Localidad3"],
+        mixquiahuala: ["Mixquiahuala Localidad1", "Mixquiahuala Localidad2", "Mixquiahuala Localidad3"],
+        pachuca: ["Pachuca Localidad1", "Pachuca Localidad2", "Pachuca Localidad3"],
+        tizayuca: ["Tizayuca Localidad1", "Tizayuca Localidad2", "Tizayuca Localidad3"],
+      }
+    },
+    japon: {
+      estados: ["Tokio", "Osaka", "Kioto", "Hokkaido", "Fukuoka"],
+      municipios: {
+        tokio: ["Shinjuku", "Shibuya", "Chiyoda", "Minato", "Bunkyō"],
+        osaka: ["Chūō-ku", "Kita-ku", "Osaka Castle", "Tennoji", "Naniwa"],
+        kioto: ["Higashiyama", "Shimogyo", "Nakagyo", "Ukyo", "Fushimi"],
+        hokkaido: ["Sapporo", "Asahikawa", "Hakodate", "Obihiro", "Kushiro"],
+        fukuoka: ["Hakata-ku", "Fukuoka", "Chūō-ku", "Higashi-ku", "Sawara-ku"]
+      },
+      localidades: {
+  shinjuku: ["Kabukicho", "Golden Gai", "Shin-Okubo"],
+  shibuya: ["Shibuya Crossing", "Harajuku", "Ebisu"],
+  chiyoda: ["Akihabara", "Imperial Palace", "Marunouchi"],
+  minato: ["Tokyo Tower", "Roppongi Hills", "Odaiba"],
+  bunkyo: ["Ueno Park", "Tokyo Dome", "Koishikawa Korakuen Garden"],
+}
+
+    }
+  };
+
+  function cargarEstados() {
+    const paisSelect = document.getElementById("pais");
+    const estadoSelect = document.getElementById("estado");
+
+    const selectedPais = paisSelect.value;
+    estadoSelect.innerHTML = "";
+
+    paises[selectedPais].estados.forEach(estado => {
+      const option = document.createElement("option");
+      option.value = estado.toLowerCase();
+      option.text = estado;
+      estadoSelect.add(option);
+    });
+
+    cargarMunicipios(); // Cargar los municipios al inicio
+    cargarLocalidades(); // Cargar las localidades al inicio
+  }
+
+  function cargarMunicipios() {
+    const estadoSelect = document.getElementById("estado");
+    const municipioSelect = document.getElementById("municipio");
+
+    const selectedPais = document.getElementById("pais").value;
+    const selectedEstado = estadoSelect.value;
+    municipioSelect.innerHTML = "";
+
+    paises[selectedPais].municipios[selectedEstado].forEach(municipio => {
+      const option = document.createElement("option");
+      option.value = municipio.toLowerCase();
+      option.text = municipio;
+      municipioSelect.add(option);
+    });
+  }
+
+  function cargarLocalidades() {
+    const municipioSelect = document.getElementById("municipio");
+    const localidadSelect = document.getElementById("localidad");
+
+    const selectedPais = document.getElementById("pais").value;
+    const selectedMunicipio = municipioSelect.value;
+    localidadSelect.innerHTML = "";
+
+    paises[selectedPais].localidades[selectedMunicipio].forEach(localidad => {
+      const option = document.createElement("option");
+      option.value = localidad.toLowerCase();
+      option.text = localidad;
+      localidadSelect.add(option);
+    });
+  }
+
+  function mostrarDatos() {
+    const pais = document.getElementById("pais").value;
+    const estado = document.getElementById("estado").value;
+    const municipio = document.getElementById("municipio").value;
+    const localidad = document.getElementById("localidad").value;
+
+    const resultadoDiv = document.getElementById("resultado");
+    resultadoDiv.innerHTML = `<h4 class="text-center mb-3">Datos Seleccionados:</h4>
+                              <p><strong>País:</strong> ${pais}</p>
+                              <p><strong>Estado/Municipio/Ciudad:</strong> ${estado}${municipio ? ' / ' + municipio : ''}</p>
+                              <p><strong>Localidad:</strong> ${localidad}</p>`;
+  }
+</script>
+
+</body>
+</html>
